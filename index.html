@@ -3,189 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roughly Calories — Kalorien grob geschätzt</title>
-    <meta name="description" content="Roughly Calories: Foto, Sprache oder Text — die App schätzt Kalorien und Nährwerte deiner Mahlzeit. Bewusst grob, ehrlich beschriftet, ohne Konto.">
-    <!-- TODO nach dem Anlegen in App Store Connect: App-Store-ID eintragen (meta apple-itunes-app und Badge-Link). -->
-    <meta property="og:title" content="Roughly Calories">
-    <meta property="og:description" content="Kalorien grob geschätzt — aus Foto, Sprache oder Text.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://roughly.nexusrs.com">
-    <meta property="og:locale" content="de_DE">
-    <meta property="og:locale:alternate" content="en_US">
-    <meta name="keywords" content="Kalorienzähler, Kalorien schätzen Foto, calorie tracker photo, Ernährungstagebuch, KI Kalorien, food log">
+    <title>Roughly Calories</title>
+    <meta name="description" content="Roughly Calories — eine iOS-App in Entwicklung, demnächst im App Store.">
+    <meta name="robots" content="noindex">
     <link rel="canonical" href="https://roughly.nexusrs.com">
     <style>
         :root {
-            --canvas: #faf8f5;
-            --surface: #ffffff;
-            --ink: #1c1917;
-            --ink-muted: #6b655d;
-            --ink-subtle: #9a938a;
-            --accent: #c2410c;
-            --accent-soft: #fde8db;
-            --hairline: #e7e2da;
-            --radius: 20px;
+            --canvas: #faf8f5; --ink: #1c1917; --ink-muted: #6b655d; --ink-subtle: #9a938a;
+            --accent: #c2410c; --hairline: #e7e2da;
             --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             --serif: "New York", "Iowan Old Style", Georgia, "Times New Roman", serif;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body { font-family: var(--font); color: var(--ink); background: var(--canvas); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
-
-        /* Sprache: alles mit lang="en" ist ausgeblendet, bis body.en gesetzt ist. */
+        body { font-family: var(--font); color: var(--ink); background: var(--canvas); -webkit-font-smoothing: antialiased;
+               min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
         body [lang="en"] { display: none; }
         body.en [lang="de"] { display: none; }
         body.en [lang="en"] { display: block; }
-        body.en span[lang="en"] { display: inline; }
         body.en nav[lang="en"] { display: flex; }
-        body.en .screenshots-track[lang="en"] { display: flex; }
-        body.en .app-store-badge img[lang="en"] { display: inline; }
 
-        .lang-switch {
-            position: fixed; top: 20px; right: 20px; z-index: 100; display: flex; gap: 2px;
-            background: rgba(28,25,23,0.06); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-radius: 10px; padding: 3px; border: 1px solid var(--hairline);
-        }
-        .lang-switch button {
-            font-family: var(--font); font-size: 13px; font-weight: 500; padding: 6px 14px; border: none;
-            border-radius: 8px; cursor: pointer; background: transparent; color: var(--ink-muted); transition: all .25s ease;
-        }
-        .lang-switch button.active { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+        .lang-switch { position: fixed; top: 20px; right: 20px; display: flex; gap: 2px; background: rgba(28,25,23,0.06);
+                       border-radius: 10px; padding: 3px; border: 1px solid var(--hairline); }
+        .lang-switch button { font-family: var(--font); font-size: 13px; font-weight: 500; padding: 6px 14px; border: none;
+                              border-radius: 8px; cursor: pointer; background: transparent; color: var(--ink-muted); }
+        .lang-switch button.active { background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
 
-        .hero {
-            min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; align-items: center;
-            justify-content: center; text-align: center; padding: 80px 24px 60px;
-        }
-        .wordmark { font-family: var(--serif); font-size: clamp(56px, 12vw, 104px); font-weight: 600; letter-spacing: -0.03em; line-height: 1; color: var(--ink); }
+        main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 80px 24px 40px; }
+        .wordmark { font-family: var(--serif); font-size: clamp(56px, 12vw, 104px); font-weight: 600; letter-spacing: -0.03em; line-height: 1; }
         .wordmark small { display: block; font-family: var(--font); font-size: 14px; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-subtle); margin-top: 14px; font-weight: 500; }
-        .hero-tagline { font-size: clamp(19px, 2.6vw, 24px); color: var(--ink-muted); margin: 28px 0 36px; line-height: 1.4; max-width: 34ch; }
-        .app-store-badge img { height: 54px; display: none; }
-        .app-store-badge img[lang="de"] { display: inline; }
-        .hero-note { margin-top: 18px; font-size: 14px; color: var(--ink-subtle); }
+        .status { display: inline-block; margin-top: 34px; padding: 8px 16px; border-radius: 999px; background: #fde8db; color: var(--accent); font-size: 14px; font-weight: 600; letter-spacing: .02em; }
+        .lead { font-size: clamp(18px, 2.4vw, 22px); color: var(--ink-muted); margin-top: 22px; line-height: 1.45; max-width: 36ch; }
+        .contact { margin-top: 28px; font-size: 15px; color: var(--ink-subtle); }
+        .contact a { color: var(--accent); text-decoration: none; }
 
-        .screenshots { padding: 40px 0 80px; }
-        .screenshots-label, .section-label { text-align: center; font-size: 13px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-subtle); font-weight: 500; margin-bottom: 24px; }
-        .screenshots-track { display: none; gap: 20px; overflow-x: auto; padding: 8px 24px 24px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; justify-content: safe center; }
-        .screenshots-track[lang="de"] { display: flex; }
-        .screenshots-track img {
-            flex: 0 0 auto; width: 276px; height: auto; border-radius: 28px; scroll-snap-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,.06), 0 18px 40px rgba(0,0,0,.10); border: 1px solid var(--hairline); background: var(--surface);
-        }
-
-        .features { padding: 60px 24px 80px; }
-        .features-inner { max-width: 960px; margin: 0 auto; }
-        .section-title { font-family: var(--serif); text-align: center; font-size: clamp(30px, 4.5vw, 42px); font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 44px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
-        .card { background: var(--surface); border: 1px solid var(--hairline); border-radius: var(--radius); padding: 26px 24px; }
-        .card .glyph { width: 40px; height: 40px; border-radius: 12px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-size: 20px; margin-bottom: 16px; }
-        .card h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
-        .card p { font-size: 15px; color: var(--ink-muted); line-height: 1.55; }
-
-        .premium { padding: 60px 24px 90px; }
-        .premium-inner { max-width: 720px; margin: 0 auto; text-align: center; background: var(--ink); color: #f5f1ea; border-radius: 28px; padding: 48px 28px; }
-        .premium h2 { font-family: var(--serif); font-size: clamp(26px, 4vw, 34px); font-weight: 600; letter-spacing: -0.02em; margin-bottom: 14px; }
-        .premium p { color: #c9c2b8; font-size: 16px; line-height: 1.55; max-width: 48ch; margin: 0 auto; }
-        .premium .price { display: inline-block; margin-top: 22px; background: var(--accent); color: #fff; padding: 10px 18px; border-radius: 999px; font-weight: 600; font-size: 15px; }
-
-        footer { padding: 30px 24px 50px; text-align: center; }
+        footer { padding: 24px; text-align: center; }
         .footer-links { display: none; justify-content: center; gap: 22px; flex-wrap: wrap; font-size: 14px; }
         .footer-links[lang="de"] { display: flex; }
         .footer-links a { color: var(--ink-muted); text-decoration: none; }
         .footer-links a:hover { color: var(--ink); }
-        .footer-copy { margin-top: 14px; font-size: 13px; color: var(--ink-subtle); }
+        .footer-copy { margin-top: 12px; font-size: 13px; color: var(--ink-subtle); }
         .footer-copy a { color: var(--ink-subtle); }
     </style>
 </head>
 <body>
     <div class="lang-switch" role="tablist">
-        <button id="btn-de" class="active" role="tab" aria-selected="true" onclick="switchLang('de')">Deutsch</button>
-        <button id="btn-en" role="tab" aria-selected="false" onclick="switchLang('en')">English</button>
+        <button id="btn-de" class="active" role="tab" onclick="switchLang('de')">Deutsch</button>
+        <button id="btn-en" role="tab" onclick="switchLang('en')">English</button>
     </div>
 
-    <section class="hero">
+    <main>
         <h1 class="wordmark">Roughly<small>Calories</small></h1>
-        <p class="hero-tagline" lang="de">Foto, ein Satz oder ein Barcode —<br>und die Kalorien stehen da. Grob, aber ehrlich.</p>
-        <p class="hero-tagline" lang="en">A photo, a sentence or a barcode —<br>and the calories are there. Rough, but honest.</p>
-        <!-- TODO: href auf https://apps.apple.com/app/id<APP-STORE-ID> setzen, sobald die ID vorliegt. -->
-        <a href="#" class="app-store-badge" aria-label="App Store">
-            <img lang="de" src="badge-de-white.svg" alt="Laden im App Store">
-            <img lang="en" src="badge-en-white.svg" alt="Download on the App Store">
-        </a>
-        <p class="hero-note" lang="de">Kein Konto. Deine Einträge bleiben auf dem Telefon.</p>
-        <p class="hero-note" lang="en">No account. Your entries stay on your phone.</p>
-    </section>
-
-    <section class="screenshots">
-        <p class="screenshots-label" lang="de">So sieht's aus</p>
-        <p class="screenshots-label" lang="en">See it in action</p>
-        <div class="screenshots-track" lang="de">
-            <img src="screenshots/de/01.png" alt="Heute: Tagesziel, Fortschritt und die Mahlzeiten des Tages" width="402" height="874" loading="lazy">
-            <img src="screenshots/de/03.png" alt="Dein Tagesziel, berechnet aus Gewicht, Richtung und Aktivität" width="402" height="874" loading="lazy">
-            <img src="screenshots/de/02.png" alt="Verlauf der letzten Tage" width="402" height="874" loading="lazy">
-            <img src="screenshots/de/04.png" alt="Einstellungen mit Kontingent, Gerätekennung und Datenschutz" width="402" height="874" loading="lazy">
-        </div>
-        <div class="screenshots-track" lang="en">
-            <img src="screenshots/en/01.png" alt="Today: daily goal, progress and the meals of the day" width="402" height="874" loading="lazy">
-            <img src="screenshots/en/03.png" alt="Your daily goal, calculated from weight, direction and activity" width="402" height="874" loading="lazy">
-            <img src="screenshots/en/02.png" alt="History of the past days" width="402" height="874" loading="lazy">
-            <img src="screenshots/en/04.png" alt="Settings with daily limit, device identifier and privacy" width="402" height="874" loading="lazy">
-        </div>
-    </section>
-
-    <section class="features">
-        <div class="features-inner">
-            <p class="section-label" lang="de">Was die App kann</p>
-            <p class="section-label" lang="en">What it does</p>
-            <h2 class="section-title" lang="de">Eintragen, ohne zu tippen.</h2>
-            <h2 class="section-title" lang="en">Log a meal without typing.</h2>
-            <div class="grid">
-                <div class="card">
-                    <div class="glyph">📷</div>
-                    <div lang="de"><h3>Foto, Sprache oder Text</h3><p>Fotografier den Teller, sag was du gegessen hast oder tipp einen Satz. Die Schätzung kommt in Sekunden, die Portionsgröße stellst du mit einem Tipp nach.</p></div>
-                    <div lang="en"><h3>Photo, speech or text</h3><p>Snap the plate, say what you ate or type a sentence. The estimate arrives in seconds; adjust the portion size with one tap.</p></div>
-                </div>
-                <div class="card">
-                    <div class="glyph">≈</div>
-                    <div lang="de"><h3>Grob, und sagt es dir</h3><p>Eine Schätzung aus dem Foto ist eine Schätzung. Die App zeigt bei jedem Eintrag, wie verlässlich er ist — statt Genauigkeit vorzutäuschen.</p></div>
-                    <div lang="en"><h3>Rough, and says so</h3><p>An estimate from a photo is an estimate. Every entry shows how reliable it is — instead of pretending precision.</p></div>
-                </div>
-                <div class="card">
-                    <div class="glyph">▥</div>
-                    <div lang="de"><h3>Barcode und Datenbank</h3><p>Verpacktes scannst du. Die Nährwerte kommen exakt aus Open Food Facts — ohne KI, ohne Limit.</p></div>
-                    <div lang="en"><h3>Barcode and database</h3><p>Scan packaged food. Nutrients come straight from Open Food Facts — no AI, no limit.</p></div>
-                </div>
-                <div class="card">
-                    <div class="glyph">◎</div>
-                    <div lang="de"><h3>Bleibt bei dir</h3><p>Kein Konto, keine Anmeldung. Deine Mahlzeiten liegen auf deinem Telefon, Fotos werden nirgends gespeichert.</p></div>
-                    <div lang="en"><h3>Stays with you</h3><p>No account, no sign-up. Your meals live on your phone; photos are never stored.</p></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="premium">
-        <div class="premium-inner">
-            <h2 lang="de">Zehn KI-Einträge am Tag sind gratis.</h2>
-            <h2 lang="en">Ten AI entries a day are free.</h2>
-            <p lang="de">Premium hebt das auf fünfzig und gibt jeder Mahlzeit mehr Schätzversuche. Die Schätzung selbst bleibt, was sie ist — grob. 2,99 € im Monat oder 29,99 € im Jahr, das Jahresabo mit sieben Tagen gratis.</p>
-            <p lang="en">Premium raises that to fifty and gives each meal more estimate attempts. The estimate itself stays what it is — rough. €2.99 a month or €29.99 a year, the yearly plan with seven days free.</p>
-            <span class="price" lang="de">Manuell, Barcode und Suche: immer unbegrenzt</span>
-            <span class="price" lang="en">Manual, barcode and search: always unlimited</span>
-        </div>
-    </section>
+        <span class="status" lang="de">In Entwicklung</span>
+        <span class="status" lang="en">In development</span>
+        <p class="lead" lang="de">Ein Kalorienzähler für iPhone, der aus einem Foto, einem Satz oder einem Barcode schätzt — bewusst grob, ehrlich beschriftet, ohne Konto. Demnächst im App Store.</p>
+        <p class="lead" lang="en">A calorie tracker for iPhone that estimates from a photo, a sentence or a barcode — deliberately rough, honestly labelled, no account. Coming soon to the App Store.</p>
+        <p class="contact" lang="de">Fragen? <a href="mailto:support@nexusrs.com">support@nexusrs.com</a></p>
+        <p class="contact" lang="en">Questions? <a href="mailto:support@nexusrs.com">support@nexusrs.com</a></p>
+    </main>
 
     <footer>
         <nav class="footer-links" lang="de">
             <a href="privacy.html">Datenschutzerklärung</a>
             <a href="terms.html">Nutzungsbedingungen</a>
             <a href="impressum.html">Impressum</a>
-            <a href="mailto:support@nexusrs.com">Kontakt</a>
         </nav>
         <nav class="footer-links" lang="en">
             <a href="privacy.html#en">Privacy Policy</a>
             <a href="terms.html#en">Terms of Use</a>
             <a href="impressum.html">Legal Notice</a>
-            <a href="mailto:support@nexusrs.com">Contact</a>
         </nav>
         <p class="footer-copy">&copy; 2026 <a href="https://nexusrs.com">Nexus RS</a></p>
     </footer>
@@ -196,16 +81,8 @@
             document.documentElement.lang = lang;
             document.getElementById('btn-de').classList.toggle('active', lang === 'de');
             document.getElementById('btn-en').classList.toggle('active', lang === 'en');
-            document.getElementById('btn-de').setAttribute('aria-selected', lang === 'de');
-            document.getElementById('btn-en').setAttribute('aria-selected', lang === 'en');
-            try { localStorage.setItem('lang', lang); } catch (e) {}
         }
-        (function () {
-            var saved = null;
-            try { saved = localStorage.getItem('lang'); } catch (e) {}
-            var nav = (navigator.language || '').toLowerCase();
-            if (saved === 'en' || (!saved && !nav.startsWith('de'))) switchLang('en');
-        })();
+        if (!(navigator.language || '').toLowerCase().startsWith('de')) switchLang('en');
     </script>
 </body>
 </html>
