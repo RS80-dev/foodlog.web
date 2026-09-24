@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wie genau schätzt eine KI Kalorien vom Foto? Wir haben es gemessen. — Roughly Calories</title>
+    <meta name="description" content="60 gewogene Gerichte, zwei Modelle, eine Frage: Wie weit liegt eine KI-Kalorienschätzung vom Foto daneben? Die Messung hinter Roughly Calories, mit allen Zahlen.">
+    <meta property="og:title" content="Wie genau schätzt eine KI Kalorien vom Foto? Wir haben es gemessen.">
+    <meta property="og:description" content="Der Medianfehler liegt bei 27 Prozent. Der Engpass ist nicht das Wissen des Modells, sondern die Portion. Was daraus für eine ehrliche App folgt.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://roughly.nexusrs.com/messung.html">
+    <link rel="canonical" href="https://roughly.nexusrs.com/messung.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --canvas: #faf8f5; --ink: #1c1917; --ink-muted: #6b655d; --ink-subtle: #9a938a; --accent: #c2410c; --hairline: #e7e2da; --surface: #fff; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.7; color: var(--ink); background: var(--canvas); padding: 0 16px;
+        }
+        .container { max-width: 680px; margin: 0 auto; padding: 40px 0 80px; }
+        .kicker { font-size: 14px; color: var(--ink-muted); margin-bottom: 20px; }
+        .kicker a { color: var(--ink-muted); text-decoration: none; }
+        .kicker a:hover { color: var(--ink); }
+        h1 { font-family: "Literata", Georgia, serif; font-weight: 500; font-size: 34px; line-height: 1.2; margin-bottom: 16px; letter-spacing: -0.01em; }
+        .lead { font-size: 19px; color: var(--ink-muted); margin-bottom: 8px; line-height: 1.55; }
+        .meta { font-size: 14px; color: var(--ink-subtle); margin-bottom: 40px; }
+        h2 { font-family: "Literata", Georgia, serif; font-weight: 500; font-size: 24px; line-height: 1.25; margin-top: 44px; margin-bottom: 14px; }
+        p { font-size: 17px; margin-bottom: 16px; }
+        ul { padding-left: 22px; margin-bottom: 16px; }
+        li { font-size: 17px; margin-bottom: 8px; }
+        a { color: var(--accent); }
+        strong { font-weight: 600; }
+        table { width: 100%; border-collapse: collapse; margin: 8px 0 24px; font-size: 15px; }
+        th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+        th { font-weight: 600; color: var(--ink-muted); font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; }
+        td.zahl, th.zahl { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .hinweis { margin: 28px 0; padding: 18px 20px; background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; font-size: 15px; color: var(--ink-muted); }
+        .hinweis p:last-child { margin-bottom: 0; }
+        .zitat { font-family: "Literata", Georgia, serif; font-size: 22px; line-height: 1.4; margin: 32px 0; padding-left: 18px; border-left: 3px solid var(--accent); }
+        .cta { margin-top: 48px; padding: 24px; background: var(--surface); border: 1px solid var(--hairline); border-radius: 16px; }
+        .cta p { margin-bottom: 14px; }
+        .cta .badge img { height: 48px; }
+        footer { margin-top: 48px; font-size: 14px; color: var(--ink-subtle); display: flex; gap: 20px; flex-wrap: wrap; }
+        footer a { color: var(--ink-subtle); text-decoration: none; }
+        footer a:hover { color: var(--ink); }
+        @media (max-width: 480px) {
+            h1 { font-size: 28px; }
+            table { font-size: 14px; }
+            th, td { padding: 8px 6px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p class="kicker"><a href="/">Roughly Calories</a> · Aus der Werkstatt</p>
+
+        <h1>Wie genau schätzt eine KI Kalorien vom Foto? Wir haben es gemessen.</h1>
+        <p class="lead">Bevor ich eine App baue, die Kalorien vom Teller abliest, wollte ich wissen, wie weit sie danebenliegt. Die Antwort: im Mittel um ein Viertel. Und der Fehler sitzt nicht da, wo man ihn vermutet.</p>
+        <p class="meta">Rene Scheucher · 24. September 2026 · 8 Minuten</p>
+
+        <p>Kalorien-Apps mit Fotoerkennung gibt es viele. Fast alle zeigen nach dem Foto eine Zahl auf das Kilokalorie genau, manche mit Nachkommastelle. Keine sagt, wie sicher diese Zahl ist. Als ich Roughly Calories zu bauen begann, war das meine erste Frage: Was kann ein Bildmodell hier wirklich, und was nicht? Ich habe es gemessen, bevor ich eine Zeile der App geschrieben habe. Die Zahlen unten haben entschieden, wie die App aussieht.</p>
+
+        <h2>Der Aufbau</h2>
+        <p>Für eine Messung braucht man Gerichte, deren Kalorien man wirklich kennt. Ich habe <a href="https://github.com/google-research-datasets/Nutrition5k">Nutrition5k</a> genommen, einen Datensatz von Google Research: Kantinenteller, von oben fotografiert, jede Zutat einzeln gewogen, die Kalorien aus den Gewichten berechnet. Daraus 60 Gerichte, geschichtet nach Kaloriengehalt, von der Beerenschale bis zum vollen Teller.</p>
+        <p>Jedes Bild ging an ein Sprachmodell mit Bildverständnis, mit der Bitte um Zutaten, Gewicht, Kalorien und Makros als strukturierte Antwort. Verglichen habe ich die Kalorienschätzung mit der gewogenen Referenz. Die Kennzahl ist der <strong>Medianfehler</strong>: Bei der Hälfte der Gerichte liegt das Modell näher dran als dieser Wert, bei der anderen Hälfte weiter weg. Der Mittelwert wäre die falsche Größe, weil ein einziger Totalausreißer ihn verzerrt. Dazu der Anteil der Gerichte, die innerhalb von 20 beziehungsweise 30 Prozent landen.</p>
+        <p>Gemessen habe ich zwei Modelle: Mistral Small, mit dem die App entwickelt wurde, und Gemini 3.1 Flash-Lite, das heute die Fotos schätzt. Insgesamt rund 1.000 Anfragen, für zusammen unter einem Dollar.</p>
+
+        <h2>Befund 1: Das Modell weiß, was auf dem Teller liegt. Es weiß nicht, wie viel.</h2>
+        <p>Die Zutatenlisten stimmen fast immer. Lachs, Bulgur, Brokkoli, Sauce: erkannt. Die Kalorien lagen trotzdem weit daneben, bei Mistral Small im Median um <strong>49,5 Prozent</strong>. Also habe ich dem Modell in einem zweiten Lauf das gewogene Gesamtgewicht dazugesagt, sonst nichts. Der Fehler fiel auf <strong>18,6 Prozent</strong>.</p>
+        <table>
+            <tr><th>Eingabe (Mistral Small)</th><th class="zahl">Medianfehler</th></tr>
+            <tr><td>Foto allein</td><td class="zahl">49,5 %</td></tr>
+            <tr><td>Foto plus grobe Portionsstufe (klein, mittel, groß)</td><td class="zahl">37,4 %</td></tr>
+            <tr><td>Foto plus Gewicht in Gramm</td><td class="zahl">18,6 %</td></tr>
+            <tr><td>Nur Text, mit Mengenangabe</td><td class="zahl">15,5 %</td></tr>
+            <tr><td>Nur Text, ohne Mengenangabe</td><td class="zahl">87,8 %</td></tr>
+        </table>
+        <p>Die letzte Zeile ist die aufschlussreichste. Eine reine Zutatenliste ohne Mengen ist schlechter als das Foto. Das Bild trägt also echte Information über die Portion, nur eben nicht genug. Das Nährwertwissen des Modells ist nicht das Problem. Sobald die Menge feststeht, liegt es bei 15 bis 19 Prozent, so gut wie ein aufmerksamer Mensch mit Küchenwaage. Der Engpass ist das Abschätzen der Menge aus einem Bild. Das kann ein Mensch auch nicht.</p>
+
+        <h2>Befund 2: Ein Tipp des Nutzers hilft mehr als ein besseres Modell.</h2>
+        <p>Niemand wiegt sein Essen. Aber jeder kann sagen, ob die Portion klein, mittel oder groß war. Ein Tipp. Ich habe simuliert, was das über einen Tag mit drei Mahlzeiten ausmacht, 5.000 zufällige Tage aus den Testgerichten: Ohne Portionsangabe liegt die Tagessumme im Median um <strong>25 Prozent</strong> daneben, mit der Stufe um <strong>19 Prozent</strong>. Einzelfehler heben sich über den Tag zum Teil auf, deshalb ist der Tagesfehler kleiner als der je Gericht.</p>
+        <p>Die Frage war, ob das hält, wenn Nutzer sich verschätzen. Ich habe die Angaben absichtlich verschoben:</p>
+        <table>
+            <tr><th>Portionsangabe</th><th class="zahl">Tagesfehler, Median</th></tr>
+            <tr><td>Keine Abfrage</td><td class="zahl">24,7 %</td></tr>
+            <tr><td>Immer richtig</td><td class="zahl">19,2 %</td></tr>
+            <tr><td>Bei 40 Prozent der Mahlzeiten eine Stufe daneben</td><td class="zahl">21,5 %</td></tr>
+            <tr><td>Immer eine Stufe zu klein</td><td class="zahl">19,6 %</td></tr>
+            <tr><td>Immer eine Stufe zu groß</td><td class="zahl">57,6 %</td></tr>
+        </table>
+        <p>Zwei Dinge daran sind bemerkenswert. Selbst wenn fast jede zweite Angabe falsch ist, bleibt es besser als ohne Abfrage. Und die Richtung ist nicht symmetrisch: zu klein geschätzt kostet nichts, zu groß geschätzt verdreifacht den Fehler. Der Grund ist, dass das Modell von sich aus leicht überschätzt. Eine zu kleine Angabe gleicht das aus, eine zu große verstärkt es. Da Menschen ihre Portionen eher unterschätzen, arbeitet die typische Abweichung für die App.</p>
+        <p>Zum Vergleich der Sprung zwischen Modellen: Das dreimal teurere Mistral Large war vom kleinen Modell statistisch nicht zu unterscheiden. Ein Tipp des Nutzers bringt mehr als der Wechsel auf ein größeres Modell.</p>
+
+        <h2>Befund 3: Das heutige Modell kommt ohne Stufe fast genauso weit.</h2>
+        <p>Seit September schätzt Gemini 3.1 Flash-Lite die Fotos. Ohne jede Mengenangabe liegt es auf denselben 60 Gerichten bei <strong>26,6 Prozent</strong> Medianfehler. 42 Prozent der Gerichte landen innerhalb von 20 Prozent, 58 Prozent innerhalb von 30. Das Gewicht des Tellers trifft es im Median auf 16 Prozent. Mit der richtigen Portionsstufe wird es nicht besser, 27,4 Prozent, der Unterschied liegt im Rauschen.</p>
+        <p>Daraus folgte eine Änderung in der App: Die erste Schätzung geht ohne Stufe hinaus, das Modell wiegt selbst, und die Stufenwahl zeigt danach seine Einschätzung. Erst wenn der Nutzer sie korrigiert, geht der Hinweis mit. Das spart den Tipp, den die Messung vom ersten Modell noch verlangt hatte.</p>
+        <p>Auch dieses Modell überschätzt leicht, bei 57 Prozent der Gerichte, im Median um 11 Kilokalorien. Eine Schätzung dauert rund zweieinhalb Sekunden und kostet etwa ein Zehntel US-Cent.</p>
+
+        <div class="hinweis">
+            <p><strong>Was die Zahlen nicht können.</strong> 60 Gerichte sind wenig. Unterschiede unter fünf Prozentpunkten sind darauf nicht belastbar, zwei Läufe derselben Bedingung streuten um vier Punkte. Nutrition5k zeigt Kantinenteller von oben unter gleichbleibendem Licht; ein Handyfoto beim Abendessen, schräg und im Schatten, ist schwieriger. Getränke, Verpacktes und Restaurantportionen kommen im Datensatz nicht vor. Und der relative Fehler ist bei kleinen Gerichten unfair: Bei einer Schale Beeren mit 38 Kilokalorien sind 145 Kilokalorien daneben prozentual eine Katastrophe, für den Tag fast egal.</p>
+        </div>
+
+        <h2>Was das für einen Tag bedeutet</h2>
+        <p>Bei einem Tagesziel von 1.800 Kilokalorien und drei fotografierten Mahlzeiten liegt die Summe typischerweise um 350 Kilokalorien daneben, an manchen Tagen weniger, an manchen mehr. Das reicht, um zu sehen, ob man bei 1.500 oder bei 2.500 liegt. Es reicht nicht, um zwischen 1.750 und 1.850 zu unterscheiden. Wer das Zweite braucht, braucht eine Waage, keine Kamera.</p>
+
+        <p class="zitat">Eine Zahl auf das Kilokalorie genau ist bei einem Fehler von einem Viertel keine Genauigkeit. Sie ist eine Behauptung.</p>
+
+        <h2>Was ich daraus gebaut habe</h2>
+        <ul>
+            <li><strong>Jede Schätzung trägt ein ≈.</strong> Foto, Sprache und Text zeigen ihre Zahl als das, was sie ist. Nur Barcode und Datenbank zeigen exakte Werte, weil sie exakt sind.</li>
+            <li><strong>Keine Nachkommastellen, keine Prozente.</strong> Die App rundet, weil die Messung rundet.</li>
+            <li><strong>Die Portionsstufe bleibt ein Tipp.</strong> Das Modell schlägt vor, der Nutzer korrigiert. Nach oben, wenn nötig, denn zu klein ist ungefährlich.</li>
+            <li><strong>Verpacktes läuft nicht über die KI.</strong> Ein Barcode holt die Nährwerte aus Open Food Facts, ohne Schätzung und ohne Limit. Das Modell wird nur gefragt, wo es keine bessere Quelle gibt.</li>
+            <li><strong>Die Mengenangabe wird beim Tippen und Sprechen eingefordert.</strong> „150 Gramm Skyr“ statt „Skyr“, denn die letzte Tabellenzeile oben zeigt, was der Unterschied kostet.</li>
+        </ul>
+        <p>Der Name war danach keine Frage mehr. Die App heißt Roughly, weil sie grob schätzt. Sie sagt es dazu, und sie versucht nicht, genauer auszusehen, als sie ist.</p>
+
+        <h2>Zum Nachrechnen</h2>
+        <p>Der Messaufbau, die Prompts und alle Rohantworten liegen im <a href="https://github.com/RS80-dev/foodlog/tree/main/eval_runner">Eval-Ordner des Repos</a>. Wer einen anderen Datensatz, ein anderes Modell oder eine andere Kennzahl für richtiger hält, kann es dort nachstellen. Ich freue mich über Widerspruch mit Zahlen.</p>
+
+        <div class="cta">
+            <p><strong>Roughly Calories</strong> ist im App Store. Kein Konto, kein Tracking, drei KI-Einträge am Tag gratis.</p>
+            <a class="badge" href="https://apps.apple.com/app/id6806861679" aria-label="App Store"><img src="badge-de-white.svg" alt="Laden im App Store"></a>
+        </div>
+
+        <footer>
+            <a href="/">Startseite</a>
+            <a href="privacy.html">Datenschutz</a>
+            <a href="terms.html">Nutzungsbedingungen</a>
+            <a href="impressum.html">Impressum</a>
+            <a href="mailto:support@nexusrs.com">Kontakt</a>
+        </footer>
+    </div>
+</body>
+</html>
