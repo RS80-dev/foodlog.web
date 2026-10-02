@@ -12,6 +12,7 @@
     <meta property="og:url" content="https://roughly.nexusrs.com">
     <meta property="og:locale" content="de_DE">
     <meta property="og:locale:alternate" content="en_US">
+    <meta property="og:locale:alternate" content="fr_FR">
     <meta name="keywords" content="Kalorienzähler, Kalorien schätzen Foto, calorie tracker photo, Ernährungstagebuch, KI Kalorien, food log">
     <link rel="canonical" href="https://roughly.nexusrs.com">
     <link rel="icon" type="image/png" href="app-icon.png">
@@ -34,14 +35,15 @@
         html { scroll-behavior: smooth; }
         body { font-family: var(--font); color: var(--ink); background: var(--canvas); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
 
-        /* Sprache: alles mit lang="en" ist ausgeblendet, bis body.en gesetzt ist. */
-        body [lang="en"] { display: none; }
-        body.en [lang="de"] { display: none; }
-        body.en [lang="en"] { display: block; }
-        body.en span[lang="en"] { display: inline; }
-        body.en nav[lang="en"] { display: flex; }
-        body.en .screenshots-track[lang="en"] { display: flex; }
-        body.en .app-store-badge img[lang="en"] { display: inline; }
+        /* Sprache: alles mit lang="en" oder lang="fr" ist ausgeblendet, bis body.en bzw. body.fr gesetzt ist. */
+        body [lang="en"], body [lang="fr"] { display: none; }
+        body.en [lang="de"], body.en [lang="fr"] { display: none; }
+        body.fr [lang="de"], body.fr [lang="en"] { display: none; }
+        body.en [lang="en"], body.fr [lang="fr"] { display: block; }
+        body.en span[lang="en"], body.fr span[lang="fr"] { display: inline; }
+        body.en nav[lang="en"], body.fr nav[lang="fr"] { display: flex; }
+        body.en .screenshots-track[lang="en"], body.fr .screenshots-track[lang="fr"] { display: flex; }
+        body.en .app-store-badge img[lang="en"], body.fr .app-store-badge img[lang="fr"] { display: inline; }
 
         .lang-switch {
             position: fixed; top: 20px; right: 20px; z-index: 100; display: flex; gap: 2px;
@@ -62,7 +64,7 @@
         .wordmark small { display: block; font-family: var(--font); font-size: 14px; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-subtle); margin-top: 14px; font-weight: 500; }
         .hero-tagline { font-size: clamp(19px, 2.6vw, 24px); color: var(--ink-muted); margin: 28px 0 36px; line-height: 1.4; max-width: 34ch; }
         .app-store-badge img { height: 54px; display: none; }
-        body:not(.en) .app-store-badge img[lang="de"] { display: inline; }
+        body:not(.en):not(.fr) .app-store-badge img[lang="de"] { display: inline; }
         .hero-note { margin-top: 18px; font-size: 14px; color: var(--ink-subtle); }
 
         .screenshots { padding: 40px 0 80px; }
@@ -88,8 +90,10 @@
         .premium h2 { font-family: var(--serif); font-size: clamp(26px, 4vw, 34px); font-weight: 600; letter-spacing: -0.02em; margin-bottom: 14px; }
         .premium p { color: #c9c2b8; font-size: 16px; line-height: 1.55; max-width: 48ch; margin: 0 auto; }
         /* Spezifischer als die Sprachregeln oben, deshalb hier je Sprache ausdrücklich. */
-        .premium .price[lang="en"], body.en .premium .price[lang="de"] { display: none; }
-        body.en .premium .price[lang="en"] { display: inline-block; }
+        .premium .price[lang="en"], .premium .price[lang="fr"],
+        body.en .premium .price[lang="de"], body.en .premium .price[lang="fr"],
+        body.fr .premium .price[lang="de"], body.fr .premium .price[lang="en"] { display: none; }
+        body.en .premium .price[lang="en"], body.fr .premium .price[lang="fr"] { display: inline-block; }
         .premium .price { display: inline-block; margin-top: 22px; background: var(--accent); color: #fff; padding: 10px 18px; border-radius: 999px; font-weight: 600; font-size: 15px; }
 
         footer { padding: 30px 24px 50px; text-align: center; }
@@ -97,6 +101,7 @@
         .footer-links[lang="de"] { display: flex; }
         .footer-links a { color: var(--ink-muted); text-decoration: none; }
         .footer-links a:hover { color: var(--ink); }
+        .footer-note { margin-top: 14px; font-size: 13px; color: var(--ink-subtle); }
         .footer-copy { margin-top: 14px; font-size: 13px; color: var(--ink-subtle); }
         .footer-copy a { color: var(--ink-subtle); }
     </style>
@@ -105,23 +110,28 @@
     <div class="lang-switch" role="tablist">
         <button id="btn-de" class="active" role="tab" aria-selected="true" onclick="switchLang('de')">Deutsch</button>
         <button id="btn-en" role="tab" aria-selected="false" onclick="switchLang('en')">English</button>
+        <button id="btn-fr" role="tab" aria-selected="false" onclick="switchLang('fr')">Français</button>
     </div>
 
     <section class="hero">
         <h1 class="wordmark">Roughly<small>Calories</small></h1>
         <p class="hero-tagline" lang="de">Foto, ein Satz oder ein Barcode —<br>und die Kalorien stehen da. Grob, aber ehrlich.</p>
         <p class="hero-tagline" lang="en">A photo, a sentence or a barcode —<br>and the calories are there. Rough, but honest.</p>
+        <p class="hero-tagline" lang="fr">Une photo, une phrase ou un code-barres —<br>et les calories sont là. À peu près, mais sans tricher.</p>
         <a href="https://apps.apple.com/app/id6806861679" class="app-store-badge" aria-label="App Store">
             <img lang="de" src="badge-de-white.svg" alt="Laden im App Store">
             <img lang="en" src="badge-en-white.svg" alt="Download on the App Store">
+            <img lang="fr" src="badge-fr-white.svg" alt="Télécharger dans l’App Store">
         </a>
         <p class="hero-note" lang="de">Kein Konto. Deine Einträge bleiben auf dem Telefon.</p>
         <p class="hero-note" lang="en">No account. Your entries stay on your phone.</p>
+        <p class="hero-note" lang="fr">Pas de compte. Tes saisies restent sur ton téléphone.</p>
     </section>
 
     <section class="screenshots">
         <p class="screenshots-label" lang="de">So sieht's aus</p>
         <p class="screenshots-label" lang="en">See it in action</p>
+        <p class="screenshots-label" lang="fr">À quoi ça ressemble</p>
         <div class="screenshots-track" lang="de">
             <img src="screenshots/de/01.png" alt="Heute: Tagesziel, Fortschritt und die Mahlzeiten des Tages" width="402" height="874" loading="lazy">
             <img src="screenshots/de/03.png" alt="Dein Tagesziel, berechnet aus Gewicht, Richtung und Aktivität" width="402" height="874" loading="lazy">
@@ -134,34 +144,46 @@
             <img src="screenshots/en/02.png" alt="History of the past days" width="402" height="874" loading="lazy">
             <img src="screenshots/en/04.png" alt="Settings with daily limit, device identifier and privacy" width="402" height="874" loading="lazy">
         </div>
+        <div class="screenshots-track" lang="fr">
+            <img src="screenshots/fr/01.png" alt="Aujourd’hui : objectif quotidien, progression et repas du jour" width="402" height="874" loading="lazy">
+            <img src="screenshots/fr/03.png" alt="Ton objectif quotidien, calculé à partir du poids, de la direction et de l’activité" width="402" height="874" loading="lazy">
+            <img src="screenshots/fr/02.png" alt="Historique des derniers jours" width="402" height="874" loading="lazy">
+            <img src="screenshots/fr/04.png" alt="Réglages avec le quota du jour, l’identifiant de l’appareil et la confidentialité" width="402" height="874" loading="lazy">
+        </div>
     </section>
 
     <section class="features">
         <div class="features-inner">
             <p class="section-label" lang="de">Was die App kann</p>
             <p class="section-label" lang="en">What it does</p>
+            <p class="section-label" lang="fr">Ce que fait l’app</p>
             <h2 class="section-title" lang="de">Eintragen, ohne zu tippen.</h2>
             <h2 class="section-title" lang="en">Log a meal without typing.</h2>
+            <h2 class="section-title" lang="fr">Saisir un repas sans taper.</h2>
             <div class="grid">
                 <div class="card">
                     <div class="glyph">📷</div>
                     <div lang="de"><h3>Foto, Sprache oder Text</h3><p>Fotografier den Teller, sag was du gegessen hast oder tipp einen Satz. Die Schätzung kommt in Sekunden; stimmt die Menge nicht, passt du sie mit einem Tipp an.</p></div>
                     <div lang="en"><h3>Photo, speech or text</h3><p>Snap the plate, say what you ate or type a sentence. The estimate arrives in seconds; if the amount looks off, adjust it with one tap.</p></div>
+                    <div lang="fr"><h3>Photo, voix ou texte</h3><p>Prends ton assiette en photo, dis ce que tu as mangé ou tape une phrase. L’estimation arrive en quelques secondes ; si la quantité semble fausse, tu l’ajustes en un geste.</p></div>
                 </div>
                 <div class="card">
                     <div class="glyph">≈</div>
                     <div lang="de"><h3>Grob, und sagt es dir</h3><p>Eine Schätzung aus dem Foto ist eine Schätzung. Die App zeigt bei jedem Eintrag, wie verlässlich er ist — statt Genauigkeit vorzutäuschen.</p></div>
                     <div lang="en"><h3>Rough, and says so</h3><p>An estimate from a photo is an estimate. Every entry shows how reliable it is — instead of pretending precision.</p></div>
+                    <div lang="fr"><h3>Approximatif, et ça le dit</h3><p>Une estimation à partir d’une photo reste une estimation. Chaque saisie montre à quel point elle est fiable, au lieu de faire semblant d’être précise.</p></div>
                 </div>
                 <div class="card">
                     <div class="glyph">▥</div>
                     <div lang="de"><h3>Barcode und Datenbank</h3><p>Verpacktes scannst du. Die Nährwerte kommen exakt aus Open Food Facts — ohne KI, ohne Limit.</p></div>
                     <div lang="en"><h3>Barcode and database</h3><p>Scan packaged food. Nutrients come straight from Open Food Facts — no AI, no limit.</p></div>
+                    <div lang="fr"><h3>Code-barres et base de données</h3><p>Les produits emballés, tu les scannes. Les valeurs nutritionnelles viennent directement d’Open Food Facts, sans IA, sans limite.</p></div>
                 </div>
                 <div class="card">
                     <div class="glyph">◎</div>
                     <div lang="de"><h3>Bleibt bei dir</h3><p>Kein Konto, keine Anmeldung. Deine Mahlzeiten liegen auf deinem Telefon, Fotos werden nirgends gespeichert.</p></div>
                     <div lang="en"><h3>Stays with you</h3><p>No account, no sign-up. Your meals live on your phone; photos are never stored.</p></div>
+                    <div lang="fr"><h3>Reste chez toi</h3><p>Pas de compte, pas d’inscription. Tes repas restent sur ton téléphone ; les photos ne sont stockées nulle part.</p></div>
                 </div>
             </div>
         </div>
@@ -171,10 +193,13 @@
         <div class="premium-inner">
             <h2 lang="de">Drei KI-Einträge am Tag sind gratis, einer davon per Foto.</h2>
             <h2 lang="en">Three AI entries a day are free, one of them by photo.</h2>
+            <h2 lang="fr">Trois saisies IA par jour sont gratuites, dont une par photo.</h2>
             <p lang="de">Premium hebt das auf dreißig am Tag, davon bis zu zehn per Foto. Die Schätzung selbst bleibt, was sie ist — grob. 2,99 € im Monat oder 29,99 € im Jahr, das Jahresabo mit sieben Tagen gratis.</p>
             <p lang="en">Premium raises that to thirty a day, up to ten of them by photo. The estimate itself stays what it is — rough. €2.99 a month or €29.99 a year, the yearly plan with seven days free.</p>
+            <p lang="fr">Premium passe à trente par jour, dont jusqu’à dix par photo. L’estimation elle-même reste ce qu’elle est : approximative. 2,99 € par mois ou 29,99 € par an, la formule annuelle avec sept jours gratuits.</p>
             <span class="price" lang="de">Manuell, Barcode und Suche: immer unbegrenzt</span>
             <span class="price" lang="en">Manual, barcode and search: always unlimited</span>
+            <span class="price" lang="fr">Saisie manuelle, code-barres et recherche : toujours illimités</span>
         </div>
     </section>
 
@@ -193,24 +218,36 @@
             <a href="mailto:support@nexusrs.com">Contact</a>
             <a href="presse.html#en">Press</a>
         </nav>
+        <nav class="footer-links" lang="fr">
+            <a href="privacy.html#fr">Politique de confidentialité</a>
+            <a href="terms.html#en">Conditions d’utilisation</a>
+            <a href="impressum.html">Mentions légales</a>
+            <a href="mailto:support@nexusrs.com">Contact</a>
+            <a href="presse.html#en">Presse</a>
+        </nav>
+        <p class="footer-note" lang="fr">Le support est assuré en anglais et en allemand. Les conditions d’utilisation existent en allemand et en anglais.</p>
         <p class="footer-copy">&copy; 2026 Nexus RS</p>
     </footer>
 
     <script>
+        var SPRACHEN = ['de', 'en', 'fr'];
         function switchLang(lang) {
-            document.body.classList.toggle('en', lang === 'en');
+            SPRACHEN.forEach(function (s) {
+                document.body.classList.toggle(s, s !== 'de' && lang === s);
+                var btn = document.getElementById('btn-' + s);
+                btn.classList.toggle('active', lang === s);
+                btn.setAttribute('aria-selected', lang === s);
+            });
             document.documentElement.lang = lang;
-            document.getElementById('btn-de').classList.toggle('active', lang === 'de');
-            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
-            document.getElementById('btn-de').setAttribute('aria-selected', lang === 'de');
-            document.getElementById('btn-en').setAttribute('aria-selected', lang === 'en');
             try { localStorage.setItem('lang', lang); } catch (e) {}
         }
         (function () {
             var saved = null;
             try { saved = localStorage.getItem('lang'); } catch (e) {}
             var nav = (navigator.language || '').toLowerCase();
-            if (saved === 'en' || (!saved && !nav.startsWith('de'))) switchLang('en');
+            if (saved === 'en' || saved === 'fr') switchLang(saved);
+            else if (!saved && nav.startsWith('fr')) switchLang('fr');
+            else if (!saved && !nav.startsWith('de')) switchLang('en');
         })();
     </script>
 </body>
