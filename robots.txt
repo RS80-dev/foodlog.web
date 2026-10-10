@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://roughly.nexusrs.com/sitemap.xml
